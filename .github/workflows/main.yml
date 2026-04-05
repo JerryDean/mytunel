@@ -1,0 +1,25 @@
+name: Sync Fork Automatically
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 定时任务：每天 UTC 0点执行
+  workflow_dispatch:     # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Fork
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main  # 这里改成你的默认分支名，如 master 或 main
+
+      - name: Sync with Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: 'zizifn/edgetunnel' # ⚠️ 必须修改这里
+          upstream_sync_branch: 'main'               # ⚠️ 修改原始仓库的分支名
+          target_sync_branch: 'main'                 # ⚠️ 修改你Fork的分支名
+          test_mode: false
